@@ -45,13 +45,6 @@ var nav =
             subMenu: [
 
                 {
-                    name: "back",
-                    text: "<--",
-                    lastSubMenuIndex: 0,
-                    subMenu: [
-                    ]
-                }
-                , {
                     name: "timeFormat",
                     text: "Time Format",
                     lastSubMenuIndex: 0,
@@ -83,66 +76,75 @@ var nav =
                     name: "dayFormat",
                     text: "Day Format",
                     lastSubMenuIndex: 0,
-                    subMenu: [{
-                        name: "back",
-                        text: "<--",
-                        lastSubMenuIndex: 0,
-                        subMenu: [
-                        ]
-                    }
-                        ,
-                    {
-                        name: "dayFormatDMY",
-                        text: "D.M.YY",
-                        lastSubMenuIndex: 0,
-                        subMenu: [
-                        ]
-                    },
-                    {
-                        name: "dayFormatMDY",
-                        text: "M.D.YY",
-                        lastSubMenuIndex: 0,
-                        subMenu: [
-                        ]
-                    }
+                    subMenu: [
+
+                        {
+                            name: "dayFormatDMY",
+                            text: "D.M.YY",
+                            lastSubMenuIndex: 0,
+                            subMenu: [
+                            ]
+                        },
+                        {
+                            name: "dayFormatMDY",
+                            text: "M.D.YY",
+                            lastSubMenuIndex: 0,
+                            subMenu: [
+                            ]
+                        },
+                        {
+                            name: "back",
+                            text: "Back",
+                            lastSubMenuIndex: 0,
+                            subMenu: [
+                            ]
+                        }
 
                     ]
+                },
+                {
+                    name: "back",
+                    text: "Back",
+                    lastSubMenuIndex: 0,
+                    subMenu: [
+                    ]
                 }
+
             ]
         },
         {
             name: "adjustTime",
             text: "Adjust Time",
             lastSubMenuIndex: 0,
-            subMenu: [{
-                name: "back",
-                text: "<--",
-                lastSubMenuIndex: 0,
-                subMenu: [
-                ]
-            }
-                ,
-            {
-                name: "adjustHrs",
-                text: "Hour",
-                lastSubMenuIndex: 0,
-                subMenu: [
-                ]
-            },
-            {
-                name: "adjustMnt",
-                text: "Minute",
-                lastSubMenuIndex: 0,
-                subMenu: [
-                ]
-            },
-            {
-                name: "adjustSec",
-                text: "Seconds",
-                lastSubMenuIndex: 0,
-                subMenu: [
-                ]
-            }
+            subMenu: [
+                {
+                    name: "adjustHrs",
+                    text: "Hour",
+                    lastSubMenuIndex: 0,
+                    subMenu: [
+                    ]
+                },
+                {
+                    name: "adjustMnt",
+                    text: "Minute",
+                    lastSubMenuIndex: 0,
+                    subMenu: [
+                    ]
+                },
+                {
+                    name: "adjustSec",
+                    text: "Seconds",
+                    lastSubMenuIndex: 0,
+                    subMenu: [
+                    ]
+                },
+                {
+                    name: "back",
+                    text: "Back",
+                    lastSubMenuIndex: 0,
+                    subMenu: [
+                    ]
+                }
             ]
         }
 
@@ -173,6 +175,7 @@ function press(k) {
 
     if (k == watch_back_root) {
         curr_nav_level = nav;
+        curr_nav_level.lastSubMenuIndex = 0;
         dirty = true;
         update();
     }
