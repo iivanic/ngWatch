@@ -13,6 +13,12 @@ var watch_enter = key_double;
 var watch_start_timer = key_short;
 var watch_end_timer = key_short;
 var watch_skip_10 = key_triple;
+
+// key press timing cut offs
+var single_press = 150;
+var long_press = 600;
+var extra_long_press = 1800;
+var intermediate_for_multiple_presses = 200;
 //navigation tree
 
 var nav = [
@@ -100,9 +106,62 @@ function init_watch() {
     r.innerHTML += "<div id='watch_time'>---</div>";
     document.addEventListener("mouseup", _mouseup);
     document.addEventListener("mousedown", _mousedown);
+    update();
+}
+function press(k) {
 
 }
 
+function single_cutoff() {
+    //  console.log("cut off");
+    if (single_press_counter == 1) {
+        press(key_short);
+        console.log("single");
+    }
+    if (single_press_counter == 2) {
+        press(key_double);
+        console.log("double");
+
+    } if (single_press_counter == 3) {
+        press(key_triple);
+        console.log("triple");
+
+    }
+    lastShortTime = 0;
+    single_cutoff_timer = 0;
+    single_press_counter = 0;
+    if (single_cutoff_timer) {
+        window.clearTimeout(single_cutoff_timer);
+    }
+    lastMouse = "";
+    lastMouseDownTime = 0;
+}
+
+var lastShortTime = 0;
+var single_cutoff_timer = 0;
+var single_press_counter = 0;
+function short_p(t) {
+    // console.log("short");
+    lastShortTime = t;
+    single_press_counter++;
+    if (single_cutoff_timer) {
+        window.clearTimeout(single_cutoff_timer);
+    }
+    if (single_press_counter > 3) {
+        single_cutoff();
+        return;
+    }
+    single_cutoff_timer = window.setTimeout(single_cutoff, intermediate_for_multiple_presses);
+
+}
+function long_p(t) {
+    console.log("long " + t);
+    press(key_long);
+}
+function extra_long_p(t) {
+    console.log("extra_long " + t);
+    press(key_extra_long);
+}
 var lastMouse = "";
 var lastMouseDownTime = 0;
 function _mouseup(e) {
@@ -110,7 +169,22 @@ function _mouseup(e) {
         return;
     lastMouse = "up";
     var now = new Date();
-    console.log("up - press lasted for " + new Date(now - lastMouseDownTime).getMilliseconds());
+    if (lastMouseDownTime == 0)
+        lastMouseDownTime = new Date();
+    var time = new Date(now - lastMouseDownTime).getMilliseconds();
+    //  console.log("up - press lasted for " + time);
+    if (time < single_press) {
+        short_p(time);
+        return;
+    }
+    if (time < long_press) {
+        long_p(time);
+        return;
+    }
+    if (time < extra_long_press) {
+        extra_long_p(time);
+        return;
+    }
 }
 function _mousedown(e) {
     if (e.buttons != 1)
@@ -119,11 +193,13 @@ function _mousedown(e) {
         lastMouseDownTime = new Date();
     lastMouse = "down";
 
-    console.log("down");
+    //   console.log("down");
 }
 
 function update() {
-
+    window.setTimeout(update, 100);
+    var t = document.getElementById("watch_time");
+    t.innerHTML = new Date().toLocaleTimeString();
 }
 
 init_watch();
