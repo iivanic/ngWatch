@@ -26,21 +26,16 @@ var nav =
     name: "root",
     text: "root",
     timeAdjustment: 0,
-    lastSubMenuIndex: 1,
+    lastSubMenuIndex: 0,
     subMenu: [
-        {
-            name: "default",
-            text: "Light",
-            lastSubMenuIndex: 0,
-            subMenu: [
-            ]
-        },
+
         {
             name: "clock",
             text: "Clock",
             lastSubMenuIndex: 0,
             subMenu: [
-            ]
+            ],
+            execute: light_on
         }
         ,
         {
@@ -88,28 +83,28 @@ var nav =
                     name: "dayFormat",
                     text: "Day Format",
                     lastSubMenuIndex: 0,
-                    subMenu: [ {
+                    subMenu: [{
                         name: "back",
                         text: "<--",
                         lastSubMenuIndex: 0,
                         subMenu: [
                         ]
                     }
-                    , 
-                        {
-                            name: "dayFormatDMY",
-                            text: "D.M.YY",
-                            lastSubMenuIndex: 0,
-                            subMenu: [
-                            ]
-                        },
-                        {
-                            name: "dayFormatMDY",
-                            text: "M.D.YY",
-                            lastSubMenuIndex: 0,
-                            subMenu: [
-                            ]
-                        }
+                        ,
+                    {
+                        name: "dayFormatDMY",
+                        text: "D.M.YY",
+                        lastSubMenuIndex: 0,
+                        subMenu: [
+                        ]
+                    },
+                    {
+                        name: "dayFormatMDY",
+                        text: "M.D.YY",
+                        lastSubMenuIndex: 0,
+                        subMenu: [
+                        ]
+                    }
 
                     ]
                 }
@@ -168,7 +163,7 @@ var lastMouseDownTime = 0;
 function init_watch() {
     var r = document.getElementById("render");
     r.innerHTML = "";
-    r.innerHTML += "<div style='font-size:large; font-weight:bold;line-height: 100px;height:100px;width:200px;text-align:center;' id='watch_time'>---</div>";
+    r.innerHTML += "<div class='light_off' style='font-size:large; font-weight:bold;line-height: 100px;height:100px;width:200px;text-align:center;' id='watch_time'>---</div>";
     r.innerHTML += "<div style='position:absolute;right:30px;top:30px;background-color:yellow;width:150px;height:50px;text-align:center;line-height: 50px;' id='indicator'>-</div>";
     document.addEventListener("mouseup", _mouseup);
     document.addEventListener("mousedown", _mousedown);
@@ -185,7 +180,7 @@ function press(k) {
         if (curr_nav_level.lastSubMenuIndex > 0)
             curr_nav_level.lastSubMenuIndex--;
         else
-            curr_nav_level.lastSubMenuIndex = curr_nav_level.length - 1;
+            curr_nav_level.lastSubMenuIndex = curr_nav_level.subMenu.length - 1;
         dirty = true;
         update();
     }
@@ -213,6 +208,9 @@ function press(k) {
                 console.log("poped " + curr_nav_level.name);
             }
             else {
+                var e = curr_nav_level.subMenu[curr_nav_level.lastSubMenuIndex].execute;
+                if (e)
+                    e();
                 console.log("execute");
             }
 
@@ -223,11 +221,20 @@ function press(k) {
     }
 
 
-    //    if (k == watch_default_action && curr_nav_level.subMenu[curr_nav_level.lastSubMenuIndex].name == 'defualt') {
-    // default action, turn on the light
-    //   }
-}
 
+}
+function light_on() {
+    var el = document.getElementById("watch_time");
+
+    el.classList.add("light");
+    el.classList.remove("light_off");
+
+    window.setTimeout(() => {
+        el.classList.remove("light");
+        el.classList.add("light_off");
+    }, 1500);
+
+}
 function cutoff() {
     lastMouse = "";
     lastMouseDownTime = 0;
@@ -337,6 +344,7 @@ function _mousedown(e) {
     //   console.log("down");
 }
 
+
 var up = 0;
 function update() {
     if (up) {
@@ -360,19 +368,6 @@ function update() {
         dirty = false;
     }
 
-    var el = document.getElementById("watch_time");
-    if (curr_nav_level == nav && curr_nav_level.lastSubMenuIndex == 0) {
-        //light
-
-        el.classList.add("light");
-        el.classList.remove("light_off");
-
-    }
-    else {
-        el.classList.remove("light");
-        el.classList.add("light_off");
-    }
-
     var t = document.getElementById("watch_time");
     var current_name = curr_nav_level.subMenu[curr_nav_level.lastSubMenuIndex].name;
     if (current_name == "default" || current_name == "clock") {
@@ -380,7 +375,7 @@ function update() {
 
     }
     else {
-        t.innerHTML =  curr_nav_level.subMenu[curr_nav_level.lastSubMenuIndex].text;
+        t.innerHTML = curr_nav_level.subMenu[curr_nav_level.lastSubMenuIndex].text;
     }
 
 
